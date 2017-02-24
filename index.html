@@ -2,18 +2,12 @@
 <html>
 <head>
 <meta charset="UTF-8">	
-	<!-- A single-page home automation map, using JQuery -->
-	
-	<!-- JQuery, loaded from a CDN -->
+
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-	<!-- this is the file with info (including JS functions) for the various data types supported by the system. -->
-	<!-- to add a feature type, either modify this file or use JS to add an object to JADATA.dataTypes -->
+
 	<script src="js/automation.js"></script>
 	<script type="text/javascript" src="data/data.json"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	
-	<!-- custom fonts defined here, using google just because it's free -->
-	<link href="http://fonts.googleapis.com/css?family=Parisienne|Lora" rel="stylesheet" type="text/css">
 	
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<link href="css/styles.css" rel="stylesheet" type="text/css">
@@ -29,10 +23,8 @@
 			<div class="col-sm-5" id="control-panel">
 				<h1>Home Control</h1>
 
-				<!-- this container will be filled with the home automation controls -->
 	            <div id="panel-content">
-	            	<!-- <fieldset>
-	            		<legend>Personal information:</legend> -->
+
 	            		<ul class="list-group" style="list-style-type:none">
 	            			<li class="list-group-item">Temperature:
 	            				<select id="temp"></select><br><br>
