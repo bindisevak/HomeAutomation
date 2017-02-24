@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">	
+	<!-- A single-page home automation map, using JQuery -->
+	
+	<!-- JQuery, loaded from a CDN -->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<!-- this is the file with info (including JS functions) for the various data types supported by the system. -->
+	<!-- to add a feature type, either modify this file or use JS to add an object to JADATA.dataTypes -->
+	<script src="js/automation.js"></script>
+	<script type="text/javascript" src="data/data.json"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	
+	<!-- custom fonts defined here, using google just because it's free -->
+	<link href="http://fonts.googleapis.com/css?family=Parisienne|Lora" rel="stylesheet" type="text/css">
+	
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link href="css/styles.css" rel="stylesheet" type="text/css">
+	<script>
+	
+	</script>
+</head>
+<body>
+    <div class="container">
+		
+        
+        <div class="row">
+			<div class="col-sm-5" id="control-panel">
+				<h1>Home Control</h1>
+
+				<!-- this container will be filled with the home automation controls -->
+	            <div id="panel-content">
+	            	<!-- <fieldset>
+	            		<legend>Personal information:</legend> -->
+	            		<ul class="list-group" style="list-style-type:none">
+	            			<li class="list-group-item">Temperature:
+	            				<select id="temp"></select><br><br>
+	            			</li>
+	            			<li class="list-group-item">Living Room:
+	            				<br>
+	            				<input class="livingRoom" id = "light" type="checkbox" title="livingRoom"  />Switch on the Light<br>
+	            				<input class="livingRoom" id = "curtains" type="checkbox" title="livingRoom"/>Open on the Curtains<br><br>
+	            			</li>
+	            			<li class="list-group-item">Master Bed Room:
+	            				<br>
+	            				<input class = "masterBed" id = "light" type="checkbox" title="masterBed"/>Switch on the Light<br>
+	            				<input class = "masterBed"  id = "curtains" type="checkbox" title="masterBed"/>Open on the Curtains<br><br>
+	            			</li>
+	            			<li class="list-group-item">Kitchen:
+	            				<br>
+	            				<input class = "kitchen" id = "light" type="checkbox" title="kitchen"/>Switch on the Light<br>
+	            				<input class = "kitchen"  id = "curtains" type="checkbox" title="kitchen"/>Open on the Curtains<br><br>
+	            			</li>
+	            			<li class="list-group-item">Other Bed Room:
+	            				<br>
+	            				<input class = "bed" id = "light" type="checkbox" title="bed"/>Switch on the Light<br>
+	            				<input class = "bed"  id = "curtains" type="checkbox" title="bed"/>Open on the Curtains
+	            			</li>
+	            		</ul>
+<!-- 	            	</fieldset> -->
+	            </div>
+	        </div>	
+			<div class="col-sm-7" id="house-layout">
+	            <h2>Home Automation</h2>		
+				<!-- this container will be filled with the home automation controls -->
+	            <div id="layout-content">
+	            	<canvas id="livingRoomCanvas" width="600" height="100">
+						Your browser does not support the HTML5 canvas tag.
+					</canvas>
+					<canvas id="masterBedCanvas" width="800" height="100">
+						Your browser does not support the HTML5 canvas tag.
+					</canvas>
+					<canvas id="kitchenCanvas" width="600" height="100">
+						Your browser does not support the HTML5 canvas tag.
+					</canvas>
+					<canvas id="bedCanvas" width="600" height="200">
+						Your browser does not support the HTML5 canvas tag.
+					</canvas>	
+	            </div>
+	        </div>
+		</div>
+	</div>		
+	
+	<script>
+							
+		var a = document.getElementById("livingRoomCanvas");
+		var ctx = a.getContext("2d");
+
+		ctx.fillStyle = "rgb(240, 183, 140)";
+		ctx.fillRect(10, 10, 450, 90);
+		ctx.font = "20px Arial";
+		ctx.fillStyle = "black";
+		ctx.fillText("Living Room", 150, 60);
+
+		var b = document.getElementById("masterBedCanvas");
+		var ctx1 = b.getContext("2d");
+
+		ctx1.fillStyle = "rgb(129, 214, 140)";
+		ctx1.fillRect(10, 10, 450, 90);
+		ctx1.font = "20px Arial";
+		ctx1.fillStyle = "black";
+		ctx1.fillText("Master Bed Room", 160, 60);
+
+		var c = document.getElementById("kitchenCanvas");
+		var ctx2 = c.getContext("2d");
+
+		ctx2.fillStyle = "rgb(163, 207, 244)";
+		ctx2.fillRect(10, 10, 450, 90);
+		ctx2.font = "20px Arial";
+		ctx2.fillStyle = "black";
+		ctx2.fillText("Kitchen", 180, 60);
+
+		var d = document.getElementById("bedCanvas");
+		var ctx3 = d.getContext("2d");
+
+		ctx3.fillStyle = "rgb(255, 204, 102";
+		ctx3.fillRect(10, 10, 450, 90);
+		ctx3.font = "20px Arial";
+		ctx3.fillStyle = "black";
+		ctx3.fillText("Bed Room", 180, 60);
+
+		$(function() {
+			var $select = $('#temp');
+			for (i = 50; i <= 80; i++) {
+				$select.append($('<option></option>').val(i).html(i))
+			}
+		});
+
+		$('#temp').change(function() {
+			homeAutomationTemp($(this).val())
+		});
+
+		$(".livingRoom").click(function() {
+			//alert($(this).attr('id'));
+			var pointer = $(this).attr('id');
+			var id = $(this).attr('title');
+			var canvasId = id + "Canvas";
+			if (this.checked) {
+
+				homeAutomation(id, pointer, true).then(function(result) {
+
+					if (canvasId == "livingRoomCanvas") {
+						//console.log(result);
+						var a = document.getElementById("livingRoomCanvas");
+						changeCanvasOn(a, result, canvasId);
+
+					}
+
+				});
+			} else {
+				homeAutomation(id, pointer, false).then(function(result) {
+					//console.log(result);
+					if (canvasId === "livingRoomCanvas") {
+						var a = document.getElementById("livingRoomCanvas");
+						changeCanvasOff(a, result, canvasId);
+					}
+
+				});
+			}
+
+		});
+		$(".bed").click(function() {
+			//alert($(this).attr('id'));
+			var pointer = $(this).attr('id');
+			var id = $(this).attr('title');
+			var canvasId = id + "Canvas";
+			if (this.checked) {
+				homeAutomation(id, pointer, true).then(function(result) {
+
+					if (canvasId == "bedCanvas") {
+						//console.log(result);
+						var a = document.getElementById("bedCanvas");
+						changeCanvasOn(a, result, canvasId);
+					}
+
+				});
+			} else {
+				homeAutomation(id, pointer, false).then(function(result) {
+					//console.log(result);
+					if (canvasId === "bedCanvas") {
+						var a = document.getElementById("bedCanvas");
+
+						changeCanvasOff(a, result, canvasId);
+
+					}
+
+				});
+			}
+
+		});
+
+		$(".masterBed").click(function() {
+			var pointer = $(this).attr('id');
+			var id = $(this).attr('title');
+			var canvasId = id + "Canvas";
+			if (this.checked) {
+				homeAutomation(id, pointer, true).then(function(result) {
+
+					if (canvasId == "masterBedCanvas") {
+						//console.log(result);
+						var a = document.getElementById("masterBedCanvas");
+
+						changeCanvasOn(a, result, canvasId);
+
+					}
+
+				});
+			} else {
+				homeAutomation(id, pointer, false).then(function(result) {
+					//console.log(result);
+					if (canvasId === "masterBedCanvas") {
+						var a = document.getElementById("masterBedCanvas");
+						changeCanvasOff(a, result, canvasId);
+					}
+
+				});
+			}
+
+		});
+
+		$(".kitchen").click(function() {
+			var pointer = $(this).attr('id');
+			var id = $(this).attr('title');
+			var canvasId = id + "Canvas";
+			if (this.checked) {
+				homeAutomation(id, pointer, true).then(function(result) {
+
+					if (canvasId == "kitchenCanvas") {
+						//console.log(result);
+						var a = document.getElementById("kitchenCanvas");
+						changeCanvasOn(a, result, canvasId);
+					}
+				});
+			} else {
+				homeAutomation(id, pointer, false).then(function(result) {
+					console.log(result);
+					if (canvasId === "kitchenCanvas") {
+						var a = document.getElementById("kitchenCanvas");
+						changeCanvasOff(a, result, canvasId);
+					}
+
+				});
+			}
+
+		});
+
+		function changeCanvasOff(a, result, canvasId) {
+			var ctx = a.getContext("2d");
+
+			if (canvasId === "bedCanvas") {
+				ctx.fillStyle = "rgb(255, 204, 102";
+			}
+			if (canvasId === "masterBedCanvas") {
+				ctx.fillStyle = "rgb(129, 214, 140)";
+			}
+			if (canvasId === "kitchenCanvas") {
+				ctx.fillStyle = "rgb(163, 207, 244)";
+			}
+			if (canvasId === "livingRoomCanvas") {
+				ctx.fillStyle = "rgb(240, 183, 140)";
+			}
+			ctx.fillRect(10, 10, 450, 90);
+			ctx.font = "20px Arial";
+			ctx.fillStyle = "black";
+
+			var txt = String(result);
+			ctx.fillText(txt, 150, 60);
+			//alert(txt);
+
+		}
+
+		function changeCanvasOn(a, result, canvasId) {
+
+			var ctx1 = a.getContext("2d");
+
+			if (canvasId === "bedCanvas") {
+				ctx1.fillStyle = "rgb(255, 204, 102";
+			}
+			if (canvasId === "masterBedCanvas") {
+				ctx1.fillStyle = "rgb(129, 214, 140)";
+			}
+			if (canvasId === "kitchenCanvas") {
+				ctx1.fillStyle = "rgb(163, 207, 244)";
+			}
+			if (canvasId === "livingRoomCanvas") {
+				ctx1.fillStyle = "rgb(240, 183, 140)";
+			}
+			ctx1.fillRect(10, 10, 450, 90);
+			ctx1.font = "20px Arial";
+			ctx1.fillStyle = "red";
+			var txt = String(result);
+			ctx1.fillText(txt, 150, 60);
+			//alert(txt);
+
+		}	
+
+
+
+				
+	</script>
+</body>
+</html>
