@@ -1,0 +1,7 @@
+Home Automation
+
+This is a simple prototype of Home Automation. 
+I have used Node.JS for basic http server interactions, JQuery for ajax calls, HTML/HTML5, Bootstrap for frontend, and 
+javascript. 
+This application would require v6.9.1 version of Node.JS
+This application can be run on Mozilla Firefox and Safari.
